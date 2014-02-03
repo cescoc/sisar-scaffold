@@ -2,18 +2,20 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    // Metadata.
     pkg: grunt.file.readJSON('package.json'),
-    banner: '/*! {%= title || name %} - v <%= version %}' +
-      'Created on {%= grunt.template.today("yyyy-mm-dd") %} by <%= author %}\n\n' +
+    // Metadata.
+    banner: '/*! {%= title || name %} - v {%= version %}' +
+      'Created on {%= grunt.template.today("yyyy-mm-dd") %} by {%= author %}\n\n' +
       '{%= description %}\n\n',
     // Task configuration.
     concat: {
             script: {
                 options: {
+                    // Keep parts separated by line breaks, for the sake of readability
                     separator:'\n\n'
                 },
                 src: [
+                    // JS libs first with Modernizr at the top, then custom scripts (script.js is the last)
                     'js/lib/modernizr.js',
                     'js/lib/!(modernizr).js',
                     'js/src/!(script).js',
@@ -23,6 +25,7 @@ module.exports = function(grunt) {
             },
             css: {
                 src: [
+                    // Stylesheets other then main.css is treated as a shame-sheet
                     'css/parts/main.css',
                     'css/parts/!(main).css'
                 ],
@@ -32,6 +35,7 @@ module.exports = function(grunt) {
 
         uglify: {
             build: {
+                // minification
                 src: 'js/script.js',
                 dest: 'js/script.min.js'
             }
@@ -42,6 +46,7 @@ module.exports = function(grunt) {
         imagemin: {
             dist: {
                 files: [{
+                    // original images must be placed in src folder
                     expand: true,
                     cwd: 'img/src',
                     src: ['**/*.{png,jpg,gif}'],
@@ -54,13 +59,14 @@ module.exports = function(grunt) {
         svgmin: {
             options: {
                 plugins: [{
-                    removeViewBox: false,
+                    removeViewBox: false, // requested by IE
                     removeUselessStrokeAndFill: true,
                     removeEmptyAttrs: true
                 }]
             },
             dist: {
                 files: [{
+                    // original images must be placed in src folder
                     expand: true,
                     cwd: 'img/src',
                     src: '**/*.svg',
@@ -73,6 +79,7 @@ module.exports = function(grunt) {
         svg2png: {
             all: {
                 files: [{
+                    // once minified, .svg are converted to .png in the same folder
                     src: ['img/*.svg']
                 }]
             }
@@ -80,6 +87,8 @@ module.exports = function(grunt) {
 
         sass: {
             dist: {
+                // standard sass is used to compile framework separately. Remember IE css selector limits! 
+                // http://blogs.msdn.com/b/ieinternals/archive/2011/05/14/10164546.aspx
                 options: {
                     style: 'nested'
                 },
@@ -90,9 +99,10 @@ module.exports = function(grunt) {
             }
         },
         
-        compass: {                  // Task
-            dist: {                   // Target
-                options: {              // Target options
+        compass: {
+            // uses Compass. Compiled stylesheets are placed in css/parts folder so they can be concatenated later.
+            dist: {
+                options: { 
                     sassDir: 'sass',
                     cssDir: 'css/parts',
                     environment: 'production',
@@ -110,8 +120,12 @@ module.exports = function(grunt) {
 
 
         watch: {
+            // enable livereload. See followeing link for browser extensions
+            // http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-
             options: { livereload: true },
             scripts: {
+                // when a source or a lib change in js folder, merge them together, then minify the concatenated file.
+                // If no errors, notify success.
                 files: ['js/src/*.js', 'js/lib/*.js'],
                 tasks: ['concat:script', 'uglify','notify:script'],
                 options: {
@@ -120,7 +134,7 @@ module.exports = function(grunt) {
             },
             
             css: {
-                files: ['scss/*.scss', 'css/parts/*.css', 'scss/bootstrap/*.scss', 'scss/climacons/*.scss'],
+                files: ['scss/*.scss', 'css/parts/*.css', 'scss/bootstrap/*.scss'],
                 tasks: ['sass','compass:dev','concat:css','notify:css'],
                 options: {
                     spawn: false
