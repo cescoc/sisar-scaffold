@@ -44,6 +44,9 @@ module.exports = function(grunt) {
         
 
         imagemin: {
+            options: {
+                cache: false
+            },
             dist: {
                 files: [{
                     // original images must be placed in src folder
