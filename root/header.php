@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="css/style.css">
 	<!--[if IE 8]><link rel="stylesheet" href="css/ie.css"><![endif]-->
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/{%= jqeryVersion %}/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/{%= jqueryVersion %}/jquery.min.js"></script>
 
 
 	<script src="js/script.js" type="text/javascript" charset="utf-8"></script>
