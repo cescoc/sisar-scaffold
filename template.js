@@ -52,14 +52,24 @@ exports.template = function(grunt, init, done) {
       default: '0.0.1'
     },
     {
-      name: 'css_folder',
-      message: 'Specify a name for th Stylesheet folder (default: \'css\')',
+      name: 'buildPath',
+      message: 'Please enter the relative path to the build root',
+      default: '..'
+    },
+    {
+      name: 'cssFolder',
+      message: 'Specify a name for th Stylesheet folder',
       default: 'css'
     },
     {
-      name: 'js_folder',
-      message: 'Specify a name for th Javascript folder (default: \'js\')',
+      name: 'jsFolder',
+      message: 'Specify a name for th Javascript folder',
       default: 'js'
+    },
+    {
+      name: 'imgFolder',
+      message: 'Specify a name for the images folder',
+      default: 'img'
     },
     {
       name: 'jqueryVersion',

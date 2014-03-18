@@ -12,8 +12,8 @@ module.exports = function(grunt) {
     uglify: {
         build: {
             // minification
-            src: '{%= jsFolder %}/script.js',
-            dest: '{%= jsFolder %}/script.min.js'
+            src: 'js/script.js',
+            dest: 'js/script.min.js'
         }
     },
 
@@ -25,37 +25,37 @@ module.exports = function(grunt) {
                 },
                 src: [
                     // JS libs first with Modernizr at the top, then custom scripts (script.js is the last)
-                    '{%= jsFolder %}/lib/modernizr.js',
-                    '{%= jsFolder %}/lib/!(modernizr|_*).js',
-                    '{%= jsFolder %}/src/!(script).js',
-                    '{%= jsFolder %}/src/script.js'
+                    'js/lib/modernizr.js',
+                    'js/lib/!(modernizr|_*).js',
+                    'js/src/!(script).js',
+                    'js/src/script.js'
                 ],
-                dest: '{%= jsFolder %}/script.js',
+                dest: 'js/script.js',
             },
             script_build: {
                 options: {
                     separator:'\n\n'
                 },
                 src: [
-                    '{%= jsFolder %}/lib/modernizr.js',
-                    '{%= jsFolder %}/lib/!(modernizr|_*).js',
-                    '{%= jsFolder %}/src/!(script).js',
-                    '{%= jsFolder %}/src/script.js'
+                    'js/lib/modernizr.js',
+                    'js/lib/!(modernizr|_*).js',
+                    'js/src/!(script).js',
+                    'js/src/script.js'
                 ],
                 dest: '{%= buildPath %}/{%= jsFolder %}/script.js',
             css_dev: {
                 src: [
                     // Stylesheets other then main.css is treated as a shame-sheet
-                    '{%= cssFolder %}/parts/main.css',
-                    '{%= cssFolder %}/parts/!(main).css'
+                    'css/parts/main.css',
+                    'css/parts/!(main).css'
                 ],
-                dest: '{%= cssFolder %}/style.css'
+                dest: 'css/style.css'
             },
             css_build: {
                 src: [
                     // Stylesheets other then main.css is treated as a shame-sheet
-                    '{%= cssFolder %}/parts/main.css',
-                    '{%= cssFolder %}/parts/!(main).css'
+                    'css/parts/main.css',
+                    'css/parts/!(main).css'
                 ],
                 dest: '{%= buildPath %}/{%= cssFolder %}/style.css'
             }
@@ -69,9 +69,9 @@ module.exports = function(grunt) {
                 files: [{
                     // original images must be placed in src folder
                     expand: true,
-                    cwd: '{%= imgFolder %}/src',
+                    cwd: 'img/src',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: '{%= imgFolder %}/'
+                    dest: 'img/'
                 }]
             },
             build: {
@@ -97,9 +97,9 @@ module.exports = function(grunt) {
                 files: [{
                     // original images must be placed in src folder
                     expand: true,
-                    cwd: '{%= imgFolder %}/src',
+                    cwd: 'img/src',
                     src: '**/*.svg',
-                    dest: '{%= imgFolder %}/',
+                    dest: 'img/',
                     ext: '.svg'
                 }]
             }
@@ -109,7 +109,7 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     // once minified, .svg are converted to .png in the same folder
-                    src: ['{%= imgFolder %}/**/*.svg']
+                    src: ['img/**/*.svg']
                 }]
             }
         },
@@ -142,7 +142,7 @@ module.exports = function(grunt) {
             dev: {  
                 options: {
                     sassDir: 'scss',
-                    cssDir: '{%= cssFolder %}/parts',
+                    cssDir: 'css/parts',
                     specify: ['scss/*.scss'],
                     config: 'config.rb'
                 }
@@ -157,7 +157,7 @@ module.exports = function(grunt) {
             scripts: {
                 // when a source or a lib change in js folder, merge them together, then minify the concatenated file.
                 // If no errors, notify success.
-                files: ['{%= jsFolder %}/src/*.js', '{%= jsFolder %}/lib/*.js'],
+                files: ['js/src/*.js', 'js/lib/*.js'],
                 tasks: ['concat:script_dev','concat:script_build', 'uglify','jshint','notify:script'],
                 options: {
                     spawn: false
@@ -165,7 +165,7 @@ module.exports = function(grunt) {
             },
             
             css: {
-                files: ['scss/*.scss', '{%= cssFolder %}/parts/*.css', 'scss/bootstrap/*.scss'],
+                files: ['scss/*.scss', 'css/parts/*.css', 'scss/bootstrap/*.scss'],
                 tasks: ['sass:dev','sass:build','compass:dev','concat:css_dev','concat:css_build','notify:css'],
                 options: {
                     spawn: false
@@ -173,7 +173,7 @@ module.exports = function(grunt) {
             },
 
             svg: {
-                files: ['{%= imgFolder %}/src/**/*.svg'],
+                files: ['img/src/**/*.svg'],
                 tasks: ['svgmin','svg2png','notify:images'],
                 options: {
                     spawn: false
@@ -182,7 +182,7 @@ module.exports = function(grunt) {
 
             livereload: {
                 options: { livereload: true },
-                files: ['{%= cssFolder %}/**/*', '*.{html,php,tpl}']
+                files: ['css/**/*', '*.{html,php,tpl}']
             }
         },
 
