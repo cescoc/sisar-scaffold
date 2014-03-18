@@ -1,3 +1,6 @@
 {
-  "js/src/script.js": "js/src/{%= name %}-script.js"
+  "js/src/script.js": "js/src/{%= name %}-script.js",
+  "js/" : "{%= jsFolder %}/",
+  "css/" : "{%= cssFolder %}/",
+  "img/" : "{%= imgFolder %}/"
 }

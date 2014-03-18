@@ -8,40 +8,58 @@ module.exports = function(grunt) {
       'Created on {%= grunt.template.today("yyyy-mm-dd") %} by {%= author %}\n\n' +
       '{%= description %}\n\n',
     // Task configuration.
+
+    uglify: {
+        build: {
+            // minification
+            src: '{%= jsFolder %}/script.js',
+            dest: '{%= jsFolder %}/script.min.js'
+        }
+    },
+
     concat: {
-            script: {
+            script_dev: {
                 options: {
                     // Keep parts separated by line breaks, for the sake of readability
                     separator:'\n\n'
                 },
                 src: [
                     // JS libs first with Modernizr at the top, then custom scripts (script.js is the last)
-                    'js/lib/modernizr.js',
-                    'js/lib/!(modernizr).js',
-                    'js/src/!(script).js',
-                    'js/src/script.js'
+                    '{%= jsFolder %}/lib/modernizr.js',
+                    '{%= jsFolder %}/lib/!(modernizr|_*).js',
+                    '{%= jsFolder %}/src/!(script).js',
+                    '{%= jsFolder %}/src/script.js'
                 ],
-                dest: 'js/script.js',
+                dest: '{%= jsFolder %}/script.js',
             },
-            css: {
+            script_build: {
+                options: {
+                    separator:'\n\n'
+                },
+                src: [
+                    '{%= jsFolder %}/lib/modernizr.js',
+                    '{%= jsFolder %}/lib/!(modernizr|_*).js',
+                    '{%= jsFolder %}/src/!(script).js',
+                    '{%= jsFolder %}/src/script.js'
+                ],
+                dest: '{%= buildPath %}/{%= jsFolder %}/script.js',
+            css_dev: {
                 src: [
                     // Stylesheets other then main.css is treated as a shame-sheet
-                    'css/parts/main.css',
-                    'css/parts/!(main).css'
+                    '{%= cssFolder %}/parts/main.css',
+                    '{%= cssFolder %}/parts/!(main).css'
                 ],
-                dest: 'css/style.css'
+                dest: '{%= cssFolder %}/style.css'
+            },
+            css_build: {
+                src: [
+                    // Stylesheets other then main.css is treated as a shame-sheet
+                    '{%= cssFolder %}/parts/main.css',
+                    '{%= cssFolder %}/parts/!(main).css'
+                ],
+                dest: '{%= buildPath %}/{%= cssFolder %}/style.css'
             }
         },
-
-        uglify: {
-            build: {
-                // minification
-                src: 'js/script.js',
-                dest: 'js/script.min.js'
-            }
-        },
-
-        
 
         imagemin: {
             options: {
@@ -51,9 +69,17 @@ module.exports = function(grunt) {
                 files: [{
                     // original images must be placed in src folder
                     expand: true,
-                    cwd: 'img/src',
+                    cwd: '{%= imgFolder %}/src',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: 'img/'
+                    dest: '{%= imgFolder %}/'
+                }]
+            },
+            build: {
+                files: [{
+                    expand: true,
+                    cwd: '{%= imgFolder %}/src',
+                    src: ['**/*.{png,jpg,gif}'],
+                    dest: '{%= buildPath %}/{%= imgFolder %}/'
                 }]
             }
         },
@@ -71,9 +97,9 @@ module.exports = function(grunt) {
                 files: [{
                     // original images must be placed in src folder
                     expand: true,
-                    cwd: 'img/src',
+                    cwd: '{%= imgFolder %}/src',
                     src: '**/*.svg',
-                    dest: 'img/',
+                    dest: '{%= imgFolder %}/',
                     ext: '.svg'
                 }]
             }
@@ -83,40 +109,42 @@ module.exports = function(grunt) {
             all: {
                 files: [{
                     // once minified, .svg are converted to .png in the same folder
-                    src: ['img/*.svg']
+                    src: ['{%= imgFolder %}/**/*.svg']
                 }]
             }
         },
 
         sass: {
-            dist: {
+            dev: {
                 // standard sass is used to compile framework separately. Remember IE css selector limits! 
                 // http://blogs.msdn.com/b/ieinternals/archive/2011/05/14/10164546.aspx
                 options: {
-                    style: 'nested'
+                    style: 'compact'
                 },
                 files: {
                     'css/bootstrap.css': 'scss/bootstrap/bootstrap.scss',
                     'css/font-awesome.css': 'scss/font-awesome/font-awesome.scss'
+                }
+            },
+            build: {
+                options: {
+                    style: 'nested'
+                },
+                files: {
+                    '{%= buildPath %}/{%= cssFolder %}/bootstrap.css': 'scss/bootstrap/bootstrap.scss',
+                    '{%= buildPath %}/{%= cssFolder %}/font-awesome.css': 'scss/font-awesome/font-awesome.scss'
                 }
             }
         },
         
         compass: {
             // uses Compass. Compiled stylesheets are placed in css/parts folder so they can be concatenated later.
-            dist: {
-                options: { 
-                    sassDir: 'sass',
-                    cssDir: 'css/parts',
-                    environment: 'production',
-                    specify: ['scss/*.scss']
-                }
-            },
             dev: {  
                 options: {
                     sassDir: 'scss',
-                    cssDir: 'css/parts',
-                    specify: ['scss/*.scss']
+                    cssDir: '{%= cssFolder %}/parts',
+                    specify: ['scss/*.scss'],
+                    config: 'config.rb'
                 }
             }
         },
@@ -129,23 +157,23 @@ module.exports = function(grunt) {
             scripts: {
                 // when a source or a lib change in js folder, merge them together, then minify the concatenated file.
                 // If no errors, notify success.
-                files: ['js/src/*.js', 'js/lib/*.js'],
-                tasks: ['concat:script', 'uglify','notify:script'],
+                files: ['{%= jsFolder %}/src/*.js', '{%= jsFolder %}/lib/*.js'],
+                tasks: ['concat:script_dev','concat:script_build', 'uglify','jshint','notify:script'],
                 options: {
                     spawn: false
                 }
             },
             
             css: {
-                files: ['scss/*.scss', 'css/parts/*.css', 'scss/bootstrap/*.scss'],
-                tasks: ['sass','compass:dev','concat:css','notify:css'],
+                files: ['scss/*.scss', '{%= cssFolder %}/parts/*.css', 'scss/bootstrap/*.scss'],
+                tasks: ['sass:dev','sass:build','compass:dev','concat:css_dev','concat:css_build','notify:css'],
                 options: {
                     spawn: false
                 }
             },
 
             svg: {
-                files: ['img/src/*.svg'],
+                files: ['{%= imgFolder %}/src/**/*.svg'],
                 tasks: ['svgmin','svg2png','notify:images'],
                 options: {
                     spawn: false
@@ -154,7 +182,7 @@ module.exports = function(grunt) {
 
             livereload: {
                 options: { livereload: true },
-                files: ['css/**/*', '*.{html,php,tpl}']
+                files: ['{%= cssFolder %}/**/*', '*.{html,php,tpl}']
             }
         },
 

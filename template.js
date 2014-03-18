@@ -52,6 +52,16 @@ exports.template = function(grunt, init, done) {
       default: '0.0.1'
     },
     {
+      name: 'css_folder',
+      message: 'Specify a name for th Stylesheet folder (default: \'css\')',
+      default: 'css'
+    },
+    {
+      name: 'js_folder',
+      message: 'Specify a name for th Javascript folder (default: \'js\')',
+      default: 'js'
+    },
+    {
       name: 'jqueryVersion',
       message: 'Wich version of jQuery shall we use? (only numbers and dots).\nPlease note that jQuery 2.0+ only support IE9+. By default we use 1.9.0 but you can specify an earlier version and forget about dumb browsers.',
       validator: /^\d+(\.\d+)+$/,
