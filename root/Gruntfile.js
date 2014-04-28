@@ -43,7 +43,7 @@ module.exports = function(grunt) {
                     'js/src/script.js'
                 ],
                 dest: '{%= buildPath %}/{%= jsFolder %}/script.js'
-            }
+            },
             css_dev: {
                 src: [
                     // Stylesheets other then main.css is treated as a shame-sheet
