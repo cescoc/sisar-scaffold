@@ -1,23 +1,30 @@
 module.exports = function(grunt) {
 
-  // Project configuration.
-  grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
-    // Metadata.
-    banner: '/*! {%= title || name %} - v {%= version %}' +
-      'Created on {%= grunt.template.today("yyyy-mm-dd") %} by {%= author %}\n\n' +
-      '{%= description %}\n\n',
-    // Task configuration.
+// Project configuration.
+    grunt.initConfig({
+        pkg         : grunt.file.readJSON('package.json'),
 
-    uglify: {
-        build: {
-            // minification
-            src: 'js/script.js',
-            dest: 'js/script.min.js'
-        }
-    },
+        // Folders and paths
+        buildPath   : '{%= buildPath %}',
+        jsFolder    : '{%= jsFolder %}',
+        cssFolder   : '{%= cssFolder %}',
+        imgFolder   : '{%= imgFolder %}',
 
-    concat: {
+        // Metadata.
+        banner: '/*! {%= title || name %} - v {%= version %}' +
+          'Created on {%= grunt.template.today("yyyy-mm-dd") %} by {%= author %}\n\n' +
+          '{%= description %}\n\n',
+
+        // Tasks configuration.
+        uglify: {
+            build: {
+                // minification
+                src: 'js/script.js',
+                dest: 'js/script.min.js'
+            }
+        },
+
+        concat: {
             script_dev: {
                 options: {
                     // Keep parts separated by line breaks, for the sake of readability
@@ -42,7 +49,7 @@ module.exports = function(grunt) {
                     'js/src/!(script).js',
                     'js/src/script.js'
                 ],
-                dest: '{%= buildPath %}/{%= jsFolder %}/script.js'
+                dest: '<%= buildPath %>/<%= jsFolder %>/script.js'
             },
             css_dev: {
                 src: [
@@ -58,7 +65,7 @@ module.exports = function(grunt) {
                     'css/parts/main.css',
                     'css/parts/!(main).css'
                 ],
-                dest: '{%= buildPath %}/{%= cssFolder %}/style.css'
+                dest: '<%= buildPath %>/<%= cssFolder %>/style.css'
             }
         },
 
@@ -78,9 +85,9 @@ module.exports = function(grunt) {
             build: {
                 files: [{
                     expand: true,
-                    cwd: '{%= imgFolder %}/src',
+                    cwd: '<%= imgFolder %>/src',
                     src: ['**/*.{png,jpg,gif}'],
-                    dest: '{%= buildPath %}/{%= imgFolder %}/'
+                    dest: '<%= buildPath %>/<%= imgFolder %>/'
                 }]
             }
         },
@@ -117,7 +124,7 @@ module.exports = function(grunt) {
 
         sass: {
             dev: {
-                // standard sass is used to compile framework separately. Remember IE css selector limits! 
+                // standard sass is used to compile framework separately. Remember IE css selector limits!
                 // http://blogs.msdn.com/b/ieinternals/archive/2011/05/14/10164546.aspx
                 options: {
                     style: 'compact'
@@ -132,15 +139,15 @@ module.exports = function(grunt) {
                     style: 'nested'
                 },
                 files: {
-                    '{%= buildPath %}/{%= cssFolder %}/bootstrap.css': 'scss/bootstrap/bootstrap.scss',
-                    '{%= buildPath %}/{%= cssFolder %}/font-awesome.css': 'scss/font-awesome/font-awesome.scss'
+                    '<%= buildPath %>/<%= cssFolder %>/bootstrap.css': 'scss/bootstrap/bootstrap.scss',
+                    '<%= buildPath %>/<%= cssFolder %>/font-awesome.css': 'scss/font-awesome/font-awesome.scss'
                 }
             }
         },
-        
+
         compass: {
             // uses Compass. Compiled stylesheets are placed in css/parts folder so they can be concatenated later.
-            dev: {  
+            dev: {
                 options: {
                     sassDir: 'scss',
                     cssDir: 'css/parts',
@@ -164,7 +171,7 @@ module.exports = function(grunt) {
                     spawn: false
                 }
             },
-            
+
             css: {
                 files: ['scss/*.scss', 'css/parts/*.css', 'scss/bootstrap/*.scss'],
                 tasks: ['sass:dev','sass:build','compass:dev','concat:css_dev','concat:css_build','notify:css'],
@@ -190,25 +197,25 @@ module.exports = function(grunt) {
         notify: {
             css: {
                 options: {
-                    title: 'Stylesheet processed', 
+                    title: 'Stylesheet processed',
                     message: 'All stylesheets have been processed, compiled and merged in /css/style.css',
                 }
             },
             script: {
                 options: {
-                    title: 'Scripts combined', 
+                    title: 'Scripts combined',
                     message: 'All javascripts have been processed and merged in /js/script.js',
                 }
             },
             images: {
                 options: {
-                    title: 'Task Complete', 
+                    title: 'Task Complete',
                     message: 'All images have been optimized/compressed',
                 }
             }
         }
 
-  });
+    });
 
     // 3. Where we tell Grunt we plan to use this plug-in.
     grunt.loadNpmTasks('grunt-contrib-jshint');
