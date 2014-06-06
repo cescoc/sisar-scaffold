@@ -1,5 +1,7 @@
 # grunt-init-sisar
 
+> **DEPRECATED in favour of [generator-sisar](https://github.com/cescoc/generator-sisar) (Yeoman).**
+
 > Creates a scaffhold for a typical project of mines with [grunt-init][].
 
 [grunt-init]: http://gruntjs.com/project-scaffolding
